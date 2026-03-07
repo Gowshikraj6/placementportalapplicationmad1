@@ -1,8 +1,9 @@
 from flask_security import UserMixin
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from config.db_creation import Base
 from datetime import datetime
+from models.user_role import roles_users
 
 class User(Base, UserMixin):
     __tablename__ = "users"

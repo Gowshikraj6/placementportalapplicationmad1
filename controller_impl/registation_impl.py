@@ -1,27 +1,23 @@
-from sqlalchemy.orm import Session
-from models.users import User
-from models.roles import Role
-from models.user_role import roles_users
-from werkzeug.security import generate_password_hash
-from datetime import datetime
+from config.constants import roles
+from flask import abort
 
 
+def register_student(data):
+    if data['role'] not in roles:
+        abort(400, description="roles doesnt exist")
 
-def create_admin(engine):
     session = Session(engine)
 
     try:
-        # 1️⃣ Ensure ADMIN role exists
-        admin_role = session.query(Role).filter_by(name="ADMIN").first()
 
-        if not admin_role:
-            admin_role = Role(
+
+        entry_role = Role(
                 name="ADMIN",
                 description="System Administrator"
             )
-            session.add(admin_role)
-            session.commit()  # Commit to ensure role exists
-            print("ADMIN role created")
+        session.add(admin_role)
+        session.commit()  # Commit to ensure role exists
+        print("ADMIN role created")
 
         # 2️⃣ Check if admin user exists
         admin_user = session.query(User).filter_by(username="admin").first()
@@ -83,7 +79,7 @@ def create_admin(engine):
 
     except Exception as e:
         session.rollback()
-        print(f"Error creating admin: {e}")
-        raise
+        print(f"Error creating user: {e}")
+        abort(500, description="Error creating user")
     finally:
         session.close()

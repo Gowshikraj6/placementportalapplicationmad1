@@ -41,14 +41,15 @@ class Student(Base):
     portfolio_url = Column(Text,nullable= True)
     leetcode_rating = Column(Integer,nullable= True)
     hackerrank_rating = Column(Integer,nullable= True)
+    skills = Column(Text)
 
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
 
     # Relationships
-    skills = relationship("StudentSkill", back_populates="student", cascade="all, delete-orphan")
-    documents = relationship("StudentDocument", back_populates="student", cascade="all, delete-orphan")
-    applications = relationship("StudentApplication", back_populates="student", cascade="all, delete-orphan")
+    #skills = relationship("StudentSkill", back_populates="student", cascade="all, delete-orphan")
+    #documents = relationship("StudentDocument", back_populates="student", cascade="all, delete-orphan")
+    #applications = relationship("StudentApplication", back_populates="student", cascade="all, delete-orphan")
 
     __table_args__ = (
         Index("idx_students_batch", "batch_year"),

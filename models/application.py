@@ -21,7 +21,7 @@ class Application(Base):
 
     student_id = Column(
         BigInteger,
-        ForeignKey("students.id", ondelete="CASCADE"),
+        ForeignKey("student.id", ondelete="CASCADE"),
         nullable=False
     )
 

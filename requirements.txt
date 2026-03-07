@@ -1,3 +1,5 @@
 sqlalchemy
 flask
 flask-security
+flasgger
+flask-login

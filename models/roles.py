@@ -8,4 +8,4 @@ class Role(Base, RoleMixin):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(80), unique=True)
-    description = Column(String(255))
+    description = Column(String)
