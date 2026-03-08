@@ -16,7 +16,7 @@ class User(Base, UserMixin):
     password = Column(String(255), nullable=False)
 
     active = Column(Boolean(), default=True)
-    is_approved = Column(Boolean, default=False)
+    approved_status = Column(String(255), nullable=False)
 
     # 🔹 auditing fields
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -29,4 +29,9 @@ class User(Base, UserMixin):
         "Role",
         secondary=roles_users,
         backref="users"
+    )
+    student = relationship(
+        "Student",
+        back_populates="user",
+        uselist=False
     )

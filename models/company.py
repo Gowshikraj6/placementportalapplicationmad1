@@ -16,13 +16,8 @@ class ApprovalStatus(enum.Enum):
 class Company(Base):
     __tablename__ = "companies"
 
-    id = Column(BigInteger, primary_key=True)
+    id = Column(Integer, primary_key=True,autoincrement=True)
     company_name = Column(String(255), nullable=False, unique=True)
-
-    hr_contact_name = Column(String(150))
-    hr_contact_email = Column(String(150))
-    hr_contact_phone = Column(String(20))
-
     website = Column(String(255))
 
     approval_status = Column(

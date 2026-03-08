@@ -17,7 +17,7 @@ class ApplicationStatus(enum.Enum):
 class Application(Base):
     __tablename__ = "applications"
 
-    id = Column(BigInteger, primary_key=True)
+    id = Column(Integer, primary_key=True,autoincrement=True)
 
     student_id = Column(
         BigInteger,

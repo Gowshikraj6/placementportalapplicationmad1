@@ -15,7 +15,7 @@ class DriveStatus(enum.Enum):
 class PlacementDrive(Base):
     __tablename__ = "placement_drives"
 
-    id = Column(BigInteger, primary_key=True)
+    id = Column(Integer, primary_key=True,autoincrement=True)
 
     company_id = Column(
         BigInteger,

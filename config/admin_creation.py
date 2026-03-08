@@ -1,4 +1,6 @@
 from sqlalchemy.orm import Session
+
+from config.constants import student_role, description , company_role
 from models.users import User
 from models.roles import Role
 from models.user_role import roles_users
@@ -23,6 +25,28 @@ def create_admin(engine):
             session.commit()  # Commit to ensure role exists
             print("ADMIN role created")
 
+        student = session.query(Role).filter_by(name=student_role).first()
+
+        if not student:
+            student = Role(
+                name=student_role,
+                description=description[student_role]
+            )
+            session.add(student)
+            session.commit()  # Commit to ensure role exists
+            print("Student role created")
+
+        company = session.query(Role).filter_by(name=company_role).first()
+
+        if not company:
+            company = Role(
+                name=company_role,
+                description=description[company_role]
+            )
+            session.add(company)
+            session.commit()  # Commit to ensure role exists
+            print("company role created")
+
         # 2️⃣ Check if admin user exists
         admin_user = session.query(User).filter_by(username="admin").first()
 
@@ -32,7 +56,7 @@ def create_admin(engine):
                 email="admin@placement.com",
                 password=generate_password_hash("admin123"),
                 active=True,
-                is_approved=True,
+                approved_status = "Approved",
                 created_by="SYSTEM"
             )
 

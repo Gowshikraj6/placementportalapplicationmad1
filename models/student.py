@@ -11,7 +11,13 @@ from config.db_creation import Base
 class Student(Base):
     __tablename__ = "student"
 
-    id = Column(BigInteger, primary_key=True)
+    id = Column(Integer, primary_key=True,autoincrement=True)
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        unique=True
+    )
     roll_number = Column(String(20), unique=True, nullable=False)
     first_name = Column(String(100), nullable=False)
     last_name = Column(String(100))
@@ -50,6 +56,7 @@ class Student(Base):
     #skills = relationship("StudentSkill", back_populates="student", cascade="all, delete-orphan")
     #documents = relationship("StudentDocument", back_populates="student", cascade="all, delete-orphan")
     #applications = relationship("StudentApplication", back_populates="student", cascade="all, delete-orphan")
+    user = relationship("User", back_populates="student")
 
     __table_args__ = (
         Index("idx_students_batch", "batch_year"),
