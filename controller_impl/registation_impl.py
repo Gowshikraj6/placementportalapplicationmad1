@@ -11,6 +11,7 @@ from models.company import Company,ApprovalStatus
 from models.company_user import CompanyUser
 from config.db_creation import engine
 import traceback
+
 def register_user(data):
     if data['role'] not in roles:
         abort(400, description="roles doesnt exist")

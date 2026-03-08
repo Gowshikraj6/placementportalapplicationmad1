@@ -6,11 +6,13 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import enum
 from config.db_creation import Base
+
+
 class DriveStatus(enum.Enum):
     PENDING = "PENDING"
     APPROVED = "APPROVED"
     CLOSED = "CLOSED"
-
+    REJECTED = "REJECTED"
 
 class PlacementDrive(Base):
     __tablename__ = "placement_drives"
@@ -27,7 +29,7 @@ class PlacementDrive(Base):
     job_description = Column(Text)
 
     eligibility_criteria = Column(Text)
-
+    minimum_CGPA = Column(Text)
     application_deadline = Column(DateTime)
 
     status = Column(
