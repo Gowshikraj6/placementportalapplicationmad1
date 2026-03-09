@@ -2,6 +2,8 @@ from models import create_db_and_tables,engine
 from flask import Flask
 from api_routes.registration_endpoints import register_api
 from api_routes.admin_endpoints import admin_api
+from api_routes.company_endpoints import company_api
+from api_routes.student_endpoints import student_api
 from flask_login import current_user,LoginManager,login_user
 from flask import abort ,request
 from flasgger import Swagger
@@ -14,6 +16,11 @@ app = Flask(__name__)
 
 app.register_blueprint(register_api, url_prefix="/register")
 app.register_blueprint(admin_api, url_prefix="/admin")
+app.register_blueprint(student_api, url_prefix="/student")
+app.register_blueprint(company_api, url_prefix="/company")
+
+
+
 PUBLIC_ENDPOINTS = [
     "registration_api.register",
     "security.login",
