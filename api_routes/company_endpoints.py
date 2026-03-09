@@ -2,13 +2,15 @@ from flask import Blueprint, jsonify,request
 from flasgger import swag_from
 from controller_impl.company_impl import *
 from config.swagger import *
-
+from config.db_creation import session
+from config.decorators import role_required
 
 company_api = Blueprint("company_api", __name__)
 
 
 @company_api.route("/company/placement-drives", methods=["POST"])
 @swag_from(create_placement_drive_swagger)
+@role_required("COMPANY")
 def create_drive():
 
     data = request.json
@@ -25,6 +27,7 @@ def create_drive():
 
 @company_api.route("/company/<int:company_id>/placement-drives", methods=["GET"])
 @swag_from(get_drives_by_company_swagger)
+@role_required("COMPANY")
 def view_company_drives(company_id):
 
     drives = get_drives_by_company(session, company_id)
@@ -50,6 +53,7 @@ def view_company_drives(company_id):
 
 @company_api.route("/company/placement-drives/<int:drive_id>/applications", methods=["GET"])
 @swag_from(get_applications_by_drive_swagger)
+@role_required("COMPANY")
 def view_applications_for_drive(drive_id):
 
     applications = get_applications_by_drive(session, drive_id)
@@ -71,6 +75,7 @@ def view_applications_for_drive(drive_id):
 
 @company_api.route("/students/<int:student_id>", methods=["GET"])
 @swag_from(get_student_by_id_swagger)
+@role_required("COMPANY")
 def view_student(student_id):
 
     student = get_student_by_id(session, student_id)
@@ -91,6 +96,7 @@ def view_student(student_id):
 
 @company_api.route("/company/applications/<int:application_id>/status", methods=["PUT"])
 @swag_from(update_application_status_swagger)
+@role_required("COMPANY")
 def change_application_status(application_id):
 
     data = request.json

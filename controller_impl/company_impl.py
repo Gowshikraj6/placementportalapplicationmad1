@@ -1,10 +1,10 @@
-from sqlalchemy.orm import Session
+from config.db_creation import session
 from datetime import datetime
 from models.placement_drive import PlacementDrive
 from models.application import Application
 from models.student import Student
 
-def create_placement_drive(session: Session, data):
+def create_placement_drive(session: session, data):
 
     drive = PlacementDrive(
         company_id=data["company_id"],
@@ -24,7 +24,7 @@ def create_placement_drive(session: Session, data):
 
 
 
-def get_drives_by_company(session: Session, company_id):
+def get_drives_by_company(session: session, company_id):
 
     drives = session.query(PlacementDrive).filter(
         PlacementDrive.company_id == company_id
@@ -33,7 +33,7 @@ def get_drives_by_company(session: Session, company_id):
 
 
 
-def get_applications_by_drive(session: Session, drive_id):
+def get_applications_by_drive(session: session, drive_id):
 
     applications = session.query(Application).filter(
         Application.drive_id == drive_id
@@ -43,7 +43,7 @@ def get_applications_by_drive(session: Session, drive_id):
 
 
 
-def get_student_by_id(session: Session, student_id):
+def get_student_by_id(session: session, student_id):
 
     student = session.query(Student).filter(
         Student.id == student_id
@@ -52,7 +52,7 @@ def get_student_by_id(session: Session, student_id):
     return student
 
 
-def update_application_status(session: Session, application_id, status):
+def update_application_status(session: session, application_id, status):
 
     application = session.query(Application).filter(
         Application.id == application_id

@@ -2,6 +2,8 @@ from flask import Blueprint, jsonify,request
 from flasgger import swag_from
 from controller_impl.student_impl import *
 from config.swagger import *
+from config.db_creation import session
+from config.decorators import role_required
 
 
 student_api = Blueprint("student_api", __name__)
@@ -10,6 +12,7 @@ student_api = Blueprint("student_api", __name__)
 
 @student_api.route("/student/drives", methods=["GET"])
 @swag_from(get_approved_drives_swagger)
+@role_required("STUDENT")
 def fetch_approved_drives():
 
     result = get_approved_drives(session)
@@ -23,6 +26,7 @@ def fetch_approved_drives():
 
 @student_api.route("/student/apply", methods=["POST"])
 @swag_from(apply_for_drive_swagger)
+@role_required("STUDENT")
 def apply_drive():
 
     data = request.json
@@ -47,6 +51,7 @@ def apply_drive():
 
 @student_api.route("/student/<int:student_id>", methods=["PUT"])
 @swag_from(update_student_swagger)
+@role_required("STUDENT")
 def update_student_profile(student_id):
 
     data = request.json
@@ -69,6 +74,7 @@ def update_student_profile(student_id):
 
 @student_api.route("/student/<int:student_id>/applications", methods=["GET"])
 @swag_from(get_student_applications_swagger)
+@role_required("STUDENT")
 def fetch_student_applications(student_id):
 
     result = get_student_applications(session, student_id)

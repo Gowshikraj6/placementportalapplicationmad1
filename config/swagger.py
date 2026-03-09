@@ -1,5 +1,46 @@
+swagger_template = {
+    "swagger": "2.0",
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}
+
+login_doc = {
+    "tags": ["Authentication"],
+    "parameters": [
+        {
+            "name": "body",
+            "in": "body",
+            "required": True,
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "username": {"type": "string"},
+                    "password": {"type": "string"}
+                },
+                "required": ["username", "password"]
+            }
+        }
+    ],
+    "responses": {
+        "200": {
+            "description": "JWT token generated"
+        },
+        "401": {
+            "description": "Invalid credentials"
+        }
+    }
+}
+
 view_unapproved_users_swagger = {
     "tags": ["Admin"],
+    "security": [
+        {"Bearer": []}
+    ],
     "summary": "View all unapproved users",
     "description": "Returns a list of users whose approval status is pending",
     "responses": {
@@ -27,6 +68,9 @@ view_unapproved_users_swagger = {
 update_user_approval_swagger = {
     "tags": ["Admin"],
     "summary": "Approve or reject a user",
+    "security": [
+        {"Bearer": []}
+    ],
     "description": "Admin updates the approval status of a user",
     "parameters": [
         {
@@ -76,6 +120,9 @@ update_user_approval_swagger = {
 
 get_pending_companies_swagger = {
     "tags": ["Admin"],
+    "security": [
+        {"Bearer": []}
+    ],
     "summary": "View pending companies",
     "description": "Returns all companies waiting for admin approval",
     "responses": {
@@ -105,6 +152,9 @@ get_pending_companies_swagger = {
 
 update_company_approval_swagger = {
     "tags": ["Admin"],
+    "security": [
+        {"Bearer": []}
+    ],
     "summary": "Approve or reject a company",
     "description": "Admin updates the approval status of a company",
     "parameters": [
@@ -150,6 +200,9 @@ update_company_approval_swagger = {
 
 get_all_applications_swagger = {
     "tags": ["Admin"],
+    "security": [
+        {"Bearer": []}
+    ],
     "summary": "View all applications",
     "description": "Fetch all student applications for placement drives",
     "responses": {
@@ -178,6 +231,9 @@ get_all_applications_swagger = {
 
 get_all_placement_drives_swagger = {
     "tags": ["Admin"],
+    "security": [
+        {"Bearer": []}
+    ],
     "summary": "View all placement drives",
     "description": "Fetch all placement drives created by companies",
     "responses": {
@@ -210,6 +266,9 @@ get_all_placement_drives_swagger = {
 
 get_pending_placement_drives_swagger = {
     "tags": ["Admin"],
+    "security": [
+        {"Bearer": []}
+    ],
     "summary": "View pending placement drives",
     "description": "Returns all placement drives waiting for admin approval",
     "responses": {
@@ -242,6 +301,9 @@ get_pending_placement_drives_swagger = {
 
 update_drive_status_swagger = {
     "tags": ["Admin"],
+    "security": [
+        {"Bearer": []}
+    ],
     "summary": "Update placement drive status",
     "description": "Admin approves or rejects a placement drive",
     "parameters": [
@@ -288,6 +350,9 @@ update_drive_status_swagger = {
 
 create_placement_drive_swagger = {
     "tags": ["Company"],
+    "security": [
+        {"Bearer": []}
+    ],
     "summary": "Create placement drive",
     "description": "Company creates a new placement drive",
     "parameters": [
@@ -354,6 +419,9 @@ create_placement_drive_swagger = {
 
 get_drives_by_company_swagger = {
     "tags": ["Company"],
+    "security": [
+        {"Bearer": []}
+    ],
     "summary": "View company placement drives",
     "description": "Returns all placement drives created by a specific company",
     "parameters": [
@@ -391,6 +459,9 @@ get_drives_by_company_swagger = {
 
 get_applications_by_drive_swagger = {
     "tags": ["Company"],
+    "security": [
+        {"Bearer": []}
+    ],
     "summary": "View applications for a placement drive",
     "description": "Returns all student applications for a specific placement drive",
     "parameters": [
@@ -429,6 +500,9 @@ get_applications_by_drive_swagger = {
 
 get_student_by_id_swagger = {
     "tags": ["Student"],
+    "security": [
+        {"Bearer": []}
+    ],
     "summary": "Get student details",
     "description": "Fetch details of a student by student ID",
     "parameters": [
@@ -464,6 +538,9 @@ get_student_by_id_swagger = {
 
 update_application_status_swagger = {
     "tags": ["Company"],
+    "security": [
+        {"Bearer": []}
+    ],
     "summary": "Update application status",
     "description": "Company updates the status of a student application (e.g., SHORTLISTED, REJECTED)",
     "parameters": [
@@ -510,6 +587,9 @@ update_application_status_swagger = {
 
 get_approved_drives_swagger = {
     "tags": ["Student"],
+    "security": [
+        {"Bearer": []}
+    ],
     "summary": "Get approved placement drives",
     "description": "Fetch all placement drives approved by admin for students to apply",
     "responses": {
@@ -544,6 +624,9 @@ get_approved_drives_swagger = {
 
 apply_for_drive_swagger = {
     "tags": ["Student"],
+    "security": [
+        {"Bearer": []}
+    ],
     "summary": "Apply for a placement drive",
     "description": "Student applies to a placement drive",
     "parameters": [
@@ -594,6 +677,9 @@ apply_for_drive_swagger = {
 
 update_student_swagger = {
     "tags": ["Student"],
+    "security": [
+        {"Bearer": []}
+    ],
     "summary": "Update student profile",
     "description": "Update student details such as name, CGPA, department, etc.",
     "parameters": [
@@ -643,6 +729,9 @@ update_student_swagger = {
 
 get_student_applications_swagger = {
     "tags": ["Student"],
+    "security": [
+        {"Bearer": []}
+    ],
     "summary": "Get student applications",
     "description": "Fetch all placement drive applications submitted by a student",
     "parameters": [

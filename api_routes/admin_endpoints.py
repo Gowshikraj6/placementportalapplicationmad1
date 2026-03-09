@@ -2,21 +2,25 @@ from flask import Blueprint, jsonify,request
 from flasgger import swag_from
 from controller_impl.admin_impl import *
 from config.swagger import *
+from config.db_creation import session
+from config.decorators import role_required
 
 admin_api = Blueprint("admin_api", __name__)
 
 from flask import jsonify
 from flasgger import swag_from
 
-@admin_apiroute("/unapproved-users", methods=["GET"])
+@admin_api.route("/unapproved-users", methods=["GET"])
 @swag_from(view_unapproved_users_swagger)
+@role_required("ADMIN")
 def get_unapproved_users():
     return jsonify(view_unapproved_user()),200
 
 
 
-@admin_apiroute("/users/<int:user_id>/approval", methods=["PUT"])
+@admin_api.route("/users/<int:user_id>/approval", methods=["PUT"])
 @swag_from(update_user_approval_swagger)
+@role_required("ADMIN")
 def approve_user(user_id):
 
     data = request.json
@@ -36,8 +40,9 @@ def approve_user(user_id):
     }), 200
 
 
-@admin_apiroute("/pending-companies", methods=["GET"])
+@admin_api.route("/pending-companies", methods=["GET"])
 @swag_from(get_pending_companies_swagger)
+@role_required("ADMIN")
 def view_pending_companies():
 
     companies = get_pending_companies()
@@ -60,8 +65,9 @@ def view_pending_companies():
 
 
 
-@admin_apiroute("/companies/<int:company_id>/approval", methods=["PUT"])
+@admin_api.route("/companies/<int:company_id>/approval", methods=["PUT"])
 @swag_from(update_company_approval_swagger)
+@role_required("ADMIN")
 def approve_company(company_id):
 
     data = request.json
@@ -81,8 +87,9 @@ def approve_company(company_id):
 
 
 
-@admin_apiroute("/applications", methods=["GET"])
+@admin_api.route("/applications", methods=["GET"])
 @swag_from(get_all_applications_swagger)
+@role_required("ADMIN")
 def view_all_applications():
 
     applications = get_all_applications(session)
@@ -91,20 +98,21 @@ def view_all_applications():
 
     for app in applications:
         result.append({
-            "id": admin_apiid,
-            "student_id": admin_apistudent_id,
-            "drive_id": admin_apidrive_id,
-            "application_date": admin_apiapplication_date,
-            "status": admin_apistatus.value,
-            "notes": admin_apinotes
+            "id": admin_api.id,
+            "student_id": admin_api.student_id,
+            "drive_id": admin_api.drive_id,
+            "application_date": admin_api.application_date,
+            "status": admin_api.status,
+            "notes": admin_api.notes
         })
 
     return jsonify(result), 200
 
 
 
-@admin_apiroute("/placement-drives", methods=["GET"])
+@admin_api.route("/placement-drives", methods=["GET"])
 @swag_from(get_all_placement_drives_swagger)
+@role_required("ADMIN")
 def view_all_placement_drives():
 
     drives = get_all_placement_drives(session)
@@ -129,8 +137,9 @@ def view_all_placement_drives():
 
 
 
-@admin_apiroute("/placement-drives/pending", methods=["GET"])
+@admin_api.route("/placement-drives/pending", methods=["GET"])
 @swag_from(get_pending_placement_drives_swagger)
+@role_required("ADMIN")
 def view_pending_placement_drives():
 
     drives = get_pending_placement_drives(session)
@@ -154,8 +163,9 @@ def view_pending_placement_drives():
     return jsonify(result), 200
 
 
-@admin_apiroute("/placement-drives/<int:drive_id>/status", methods=["PUT"])
+@admin_api.route("/placement-drives/<int:drive_id>/status", methods=["PUT"])
 @swag_from(update_drive_status_swagger)
+@role_required("ADMIN")
 def approve_placement_drive(drive_id):
 
     data = request.json

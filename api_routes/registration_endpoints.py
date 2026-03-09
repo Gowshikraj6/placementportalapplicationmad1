@@ -1,11 +1,12 @@
 from flask import Blueprint, jsonify,request
 from flasgger import swag_from
 from controller_impl.registation_impl import register_user
+
 register_api = Blueprint("registration_api", __name__)
 
 @register_api.route("/register_student", methods=["POST"])
 @swag_from({
-    "tags": ["Student"],
+    "tags": ["Register"],
     "parameters": [
         {
             "name": "body",
@@ -111,7 +112,7 @@ def register_user_field():
 
 @register_api.route("/register_company", methods=["POST"])
 @swag_from({
-    "tags": ["Company"],
+    "tags": ["Register"],
     "parameters": [
         {
             "name": "body",

@@ -1,9 +1,9 @@
-from sqlalchemy.orm import Session
+from config.db_creation import session
 from models.application import Application
-from models.enums import ApplicationStatus
+from models.application import ApplicationStatus
 
 
-def apply_for_drive(session: Session, student_id, drive_id,notes:None):
+def apply_for_drive(session: session, student_id, drive_id,notes:None):
 
     # 🔹 Check if student already applied
     existing_application = session.query(Application).filter(
@@ -32,7 +32,7 @@ from sqlalchemy.orm import Session
 from models.student import Student
 
 
-def update_student(session: Session, student_id, data):
+def update_student(session: session, student_id, data):
 
     student = session.query(Student).filter(
         Student.id == student_id
@@ -55,7 +55,7 @@ from sqlalchemy.orm import Session
 from models.placement_drive import PlacementDrive, DriveStatus
 
 
-def get_approved_drives(session: Session):
+def get_approved_drives(session: session):
     try:
         drives = (
             session.query(PlacementDrive)
@@ -91,7 +91,7 @@ from models.application import Application
 from models.placement_drive import PlacementDrive
 
 
-def get_student_applications(session: Session, student_id: int):
+def get_student_applications(session: session, student_id: int):
     try:
         applications = (
             session.query(Application)

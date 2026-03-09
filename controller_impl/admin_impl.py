@@ -6,7 +6,7 @@ from models.user_role import roles_users
 from models.student import Student
 from werkzeug.security import generate_password_hash
 from datetime import datetime
-from sqlalchemy.orm import Session
+from config.db_creation import session
 from models.company import Company,ApprovalStatus
 from models.application import Application
 from models.company_user import CompanyUser
@@ -23,7 +23,7 @@ def view_unapproved_user():
 
     return users
 
-def update_user_approval(session: Session, user_id, status, admin_id):
+def update_user_approval(session: session, user_id, status, admin_id):
 
     user = session.query(User).filter(User.id == user_id).first()
     if not user:
@@ -35,14 +35,14 @@ def update_user_approval(session: Session, user_id, status, admin_id):
     return user
 
 
-def get_pending_companies(session: Session):
+def get_pending_companies(session: session):
 
     companies = session.query(Company).filter(
         Company.approval_status == ApprovalStatus.PENDING
     ).all()
     return companies
 
-def update_company_approval(session: Session, company_id, status):
+def update_company_approval(session: session, company_id, status):
 
     company = session.query(Company).filter(
         Company.id == company_id
@@ -56,13 +56,13 @@ def update_company_approval(session: Session, company_id, status):
 
 
 
-def get_all_applications(session: Session):
+def get_all_applications(session: session):
 
     applications = session.query(Application).all()
     return applications
 
 
-def get_all_placement_drives(session: Session):
+def get_all_placement_drives(session: session):
 
     drives = session.query(PlacementDrive).all()
 
@@ -70,7 +70,7 @@ def get_all_placement_drives(session: Session):
 
 
 
-def get_pending_placement_drives(session: Session):
+def get_pending_placement_drives(session: session):
 
     drives = session.query(PlacementDrive).filter(
         PlacementDrive.status == DriveStatus.PENDING
@@ -79,7 +79,7 @@ def get_pending_placement_drives(session: Session):
     return drives
 
 
-def update_drive_status(session: Session, drive_id, status):
+def update_drive_status(session: session, drive_id, status):
 
     drive = session.query(PlacementDrive).filter(
         PlacementDrive.id == drive_id

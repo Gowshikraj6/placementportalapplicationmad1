@@ -7,6 +7,7 @@ from models.application import Application
 from config.db_creation import engine,Base
 import traceback
 
+
 def create_db_and_tables():
     try:
         conn = engine.connect()
