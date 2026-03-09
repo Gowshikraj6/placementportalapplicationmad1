@@ -244,7 +244,7 @@ def register_company(data):
         session.commit()
 
         return jsonify({
-            "message": "User successfully linked to company",
+            "message": "Pending approval with admin",
             "user_id": user.id,
             "company_id": company.id
         }), 201

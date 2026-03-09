@@ -1,5 +1,5 @@
 from models import create_db_and_tables,engine
-from flask import Flask
+from flask import Flask,render_template, request, redirect, url_for, session, flash
 from api_routes.registration_endpoints import register_api
 from api_routes.admin_endpoints import admin_api
 from api_routes.company_endpoints import company_api
@@ -33,53 +33,62 @@ app.config["JWT_SECRET_KEY"] = "#MAD!1@PROJECT*^$"
 
 
 
-@app.route("/login", methods=["POST"])
+@app.route("/login", methods=["POST","GET"])
 @swag_from(login_doc)
 def login():
+    if request.method == "POST":
+        data = request.json
+        id = None
+        user = session.query(User).filter_by(
+            username=request.form.get("username")
+        ).first()
 
-    data = request.json
-    id = None
-    user = session.query(User).filter_by(
-        username=data["username"]
-    ).first()
+        if not user:
+            return {"message": "User not found"}, 404
 
-    if not user:
-        return {"message": "User not found"}, 404
+        if not check_password_hash(user.password, request.form.get("password")):
+            return {"message": "Invalid password"}, 401
+        print('hi')
+        print(user.approved_status)
+        if user.approved_status != "Approved":
+            return {"message": "User not approved"}, 403
 
-    if not check_password_hash(user.password, data["password"]):
-        return {"message": "Invalid password"}, 401
-    print('hi')
-    print(user.approved_status)
-    if user.approved_status != "Approved":
-        return {"message": "User not approved"}, 403
+        roles = [role.name for role in user.roles]
+        if roles[0] =='STUDENT':
+            student = session.query(Student).filter_by(
+            user_id=user.id
+        ).first()
+            id = student.id
 
-    roles = [role.name for role in user.roles]
-    if roles[0] =='STUDENT':
-        student = session.query(Student).filter_by(
-        user_id=user.id
-    ).first()
-        id = student.id
+        if roles[0] =='COMPANY':
+            company = session.query(CompanyUser).filter_by(
+            user_id=user.id
+        ).first()
+            id = company.company_id
 
-    if roles[0] =='COMPANY':
-        company = session.query(CompanyUser).filter_by(
-        user_id=user.id
-    ).first()
-        id = company.company_id
+        token = create_access_token(
+            identity=str(user.id),
+            additional_claims={
+                "roles": roles
+            }
+        )
+        flash("Login successful!", "success")
 
-    token = create_access_token(
-        identity=str(user.id),
-        additional_claims={
-            "roles": roles
-        }
-    )
+        session["access_token"] = token
+        session["roles"] = roles
+        session["user_id"] = user.id
+        session["table_id"] = id
+        if "ADMIN" in roles:
+            return redirect(url_for("admin_dashboard"))
+        elif "COMPANY" in roles:
+            return redirect(url_for("company_dashboard"))
+        elif "STUDENT" in roles:
+            return redirect(url_for("student_dashboard"))
+        else:
+            flash("Role not recognized!", "danger")
+            return redirect(url_for("login"))
 
-    return {
-        "access_token": token,
-        "roles": roles,
-        "user_id":user.id,
-        "table_id":id
-
-    }
+    return render_template("login.html")
 
 
 swagger = Swagger(app,template=swagger_template)

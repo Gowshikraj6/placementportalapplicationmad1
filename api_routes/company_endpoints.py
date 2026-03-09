@@ -4,9 +4,14 @@ from controller_impl.company_impl import *
 from config.swagger import *
 from config.db_creation import session
 from config.decorators import role_required
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 
 company_api = Blueprint("company_api", __name__)
 
+@company_api.route("/")
+@role_required("COMPANY")
+def company_dashboard():
+    return render_template("company_dashboard.html", user=session)
 
 @company_api.route("/company/placement-drives", methods=["POST"])
 @swag_from(create_placement_drive_swagger)

@@ -2,3 +2,4 @@ sqlalchemy
 flask
 flasgger
 flask-jwt-extended
+requests

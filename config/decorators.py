@@ -1,7 +1,7 @@
 from functools import wraps
 from flask_jwt_extended import get_jwt, jwt_required
 import traceback
-
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 
 def role_required(role):
 
@@ -16,10 +16,8 @@ def role_required(role):
                 roles = claims.get("roles", [])
 
                 if role not in roles:
-                    return {
-                        "message": "Forbidden",
-                        "required_role": role
-                    }, 403
+                    flash("Unauthorized access!", "warning")
+                    return redirect(url_for("login"))
 
                 return fn(*args, **kwargs)
 
