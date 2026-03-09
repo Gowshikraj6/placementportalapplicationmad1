@@ -1,6 +1,4 @@
 sqlalchemy
 flask
-flask-security
 flasgger
-flask-login
 flask-jwt-extended

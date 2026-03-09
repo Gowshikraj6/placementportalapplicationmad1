@@ -25,7 +25,7 @@ def apply_for_drive(session: session, student_id, drive_id,notes:None):
     session.add(application)
     session.commit()
 
-    return application
+    return application.to_dict()
 
 
 from sqlalchemy.orm import Session
@@ -48,7 +48,7 @@ def update_student(session: session, student_id, data):
 
     session.commit()
 
-    return student
+    return student.to_dict()
 
 
 from sqlalchemy.orm import Session
@@ -63,24 +63,7 @@ def get_approved_drives(session: session):
             .all()
         )
 
-        result = []
-
-        for drive in drives:
-            result.append({
-                "id": drive.id,
-                "company_name": drive.company.company_name if drive.company else None,
-                "job_title": drive.job_title,
-                "job_description": drive.job_description,
-                "eligibility_criteria": drive.eligibility_criteria,
-                "minimum_CGPA": drive.minimum_CGPA,
-                "application_deadline": drive.application_deadline,
-                "location": drive.location,
-                "salary_package": drive.salary_package,
-                "status": drive.status.value,
-                "created_at": drive.created_at
-            })
-
-        return result
+        return [drive.to_dict() for drive in drives]
 
     except Exception as e:
         return {"error": str(e)}

@@ -21,7 +21,7 @@ def view_unapproved_user():
         User.approved_status == "Pending"
     ).all()
 
-    return users
+    return [user.to_dict() for user in users]
 
 def update_user_approval(session: session, user_id, status, admin_id):
 
@@ -32,7 +32,7 @@ def update_user_approval(session: session, user_id, status, admin_id):
     user.approved_at = datetime.utcnow()
     user.approved_by = admin_id
     session.commit()
-    return user
+    return user.to_dict()
 
 
 def get_pending_companies(session: session):
@@ -40,7 +40,7 @@ def get_pending_companies(session: session):
     companies = session.query(Company).filter(
         Company.approval_status == ApprovalStatus.PENDING
     ).all()
-    return companies
+    return [company.to_dict() for company in companies]
 
 def update_company_approval(session: session, company_id, status):
 
@@ -52,21 +52,21 @@ def update_company_approval(session: session, company_id, status):
     company.approval_status = status
     company.updated_at = datetime.utcnow()
     session.commit()
-    return company
+    return company.to_dict()
 
 
 
 def get_all_applications(session: session):
 
     applications = session.query(Application).all()
-    return applications
+    return [application.to_dict() for application in applications]
 
 
 def get_all_placement_drives(session: session):
 
     drives = session.query(PlacementDrive).all()
 
-    return drives
+    return [drive.to_dict() for drive in drives]
 
 
 
@@ -76,7 +76,7 @@ def get_pending_placement_drives(session: session):
         PlacementDrive.status == DriveStatus.PENDING
     ).all()
 
-    return drives
+    return [drive.to_dict() for drive in drives]
 
 
 def update_drive_status(session: session, drive_id, status):
@@ -88,4 +88,4 @@ def update_drive_status(session: session, drive_id, status):
         return {"error": "Placement drive not found"}
     drive.status = status
     session.commit()
-    return drive
+    return drive.to_dict()

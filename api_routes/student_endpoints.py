@@ -40,13 +40,7 @@ def apply_drive():
     if isinstance(result, dict) and "error" in result:
         return jsonify(result), 400
 
-    return jsonify({
-        "id": result.id,
-        "student_id": result.student_id,
-        "drive_id": result.drive_id,
-        "status": result.status.value,
-        "notes": result.notes
-    }), 201
+    return jsonify(result), 201
 
 
 @student_api.route("/student/<int:student_id>", methods=["PUT"])
@@ -61,13 +55,7 @@ def update_student_profile(student_id):
     if isinstance(result, dict) and "error" in result:
         return jsonify(result), 404
 
-    return jsonify({
-        "id": result.id,
-        "name": result.name,
-        "email": result.email,
-        "department": result.department,
-        "cgpa": result.cgpa
-    }), 200
+    return jsonify(result), 200
 
 
 

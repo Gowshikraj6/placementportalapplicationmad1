@@ -15,7 +15,7 @@ def create_drive():
 
     data = request.json
 
-    drive = create_placement_drive(data)
+    drive = create_placement_drive(session,data)
 
     return jsonify({
         "id": drive.id,

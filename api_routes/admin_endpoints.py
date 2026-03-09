@@ -32,12 +32,7 @@ def approve_user(user_id):
     if isinstance(result, dict) and "error" in result:
         return jsonify(result), 404
 
-    return jsonify({
-        "id": result.id,
-        "username": result.username,
-        "email": result.email,
-        "approved_status": result.approved_status
-    }), 200
+    return jsonify(result), 200
 
 
 @admin_api.route("/pending-companies", methods=["GET"])
@@ -45,7 +40,7 @@ def approve_user(user_id):
 @role_required("ADMIN")
 def view_pending_companies():
 
-    companies = get_pending_companies()
+    companies = get_pending_companies(session)
 
     result = []
 
@@ -78,11 +73,7 @@ def approve_company(company_id):
     if isinstance(result, dict) and "error" in result:
         return jsonify(result), 404
 
-    return jsonify({
-        "id": result.id,
-        "company_name": result.company_name,
-        "approval_status": result.approval_status.value
-    }), 200
+    return jsonify(result), 200
 
 
 
@@ -116,24 +107,7 @@ def view_all_applications():
 def view_all_placement_drives():
 
     drives = get_all_placement_drives(session)
-
-    result = []
-
-    for drive in drives:
-        result.append({
-            "id": drive.id,
-            "company_id": drive.company_id,
-            "job_title": drive.job_title,
-            "job_description": drive.job_description,
-            "eligibility_criteria": drive.eligibility_criteria,
-            "minimum_CGPA": drive.minimum_CGPA,
-            "application_deadline": drive.application_deadline,
-            "status": drive.status.value,
-            "location": drive.location,
-            "salary_package": drive.salary_package
-        })
-
-    return jsonify(result), 200
+    return jsonify(drives), 200
 
 
 
@@ -144,23 +118,7 @@ def view_pending_placement_drives():
 
     drives = get_pending_placement_drives(session)
 
-    result = []
-
-    for drive in drives:
-        result.append({
-            "id": drive.id,
-            "company_id": drive.company_id,
-            "job_title": drive.job_title,
-            "job_description": drive.job_description,
-            "eligibility_criteria": drive.eligibility_criteria,
-            "minimum_CGPA": drive.minimum_CGPA,
-            "application_deadline": drive.application_deadline,
-            "status": drive.status.value,
-            "location": drive.location,
-            "salary_package": drive.salary_package
-        })
-
-    return jsonify(result), 200
+    return jsonify(drives), 200
 
 
 @admin_api.route("/placement-drives/<int:drive_id>/status", methods=["PUT"])
@@ -176,9 +134,4 @@ def approve_placement_drive(drive_id):
     if isinstance(result, dict) and "error" in result:
         return jsonify(result), 404
 
-    return jsonify({
-        "id": result.id,
-        "company_id": result.company_id,
-        "job_title": result.job_title,
-        "status": result.status.value
-    }), 200
+    return jsonify(result), 200

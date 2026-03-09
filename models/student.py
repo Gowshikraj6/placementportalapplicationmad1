@@ -1,11 +1,12 @@
 from sqlalchemy import (
     Column, String, Integer, BigInteger, Date,
     Boolean, Numeric, ForeignKey, Text,
-    TIMESTAMP, Index
+    TIMESTAMP, Index,Enum
 )
 from sqlalchemy.orm import  relationship
 from sqlalchemy.sql import func
 from config.db_creation import Base
+import enum
 
 
 class Student(Base):
@@ -62,3 +63,18 @@ class Student(Base):
         Index("idx_students_batch", "batch_year"),
         Index("idx_students_status", "placement_status"),
     )
+
+
+
+    def to_dict(self):
+        data = {}
+
+        for column in self.__table__.columns:
+            value = getattr(self, column.name)
+
+            if isinstance(value, enum.Enum):
+                value = value.value
+
+            data[column.name] = value
+
+        return data

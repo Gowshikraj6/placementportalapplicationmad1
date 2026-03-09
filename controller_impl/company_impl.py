@@ -3,6 +3,7 @@ from datetime import datetime
 from models.placement_drive import PlacementDrive
 from models.application import Application
 from models.student import Student
+from datetime import datetime
 
 def create_placement_drive(session: session, data):
 
@@ -12,7 +13,7 @@ def create_placement_drive(session: session, data):
         job_description=data.get("job_description"),
         eligibility_criteria=data.get("eligibility_criteria"),
         minimum_CGPA=data.get("minimum_CGPA"),
-        application_deadline=data.get("application_deadline"),
+        application_deadline=datetime.strptime(data.get("application_deadline"), "%Y-%m-%d"),
         location=data.get("location"),
         salary_package=data.get("salary_package")
     )

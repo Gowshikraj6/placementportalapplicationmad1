@@ -5,6 +5,8 @@ from api_routes.admin_endpoints import admin_api
 from api_routes.company_endpoints import company_api
 from api_routes.student_endpoints import student_api
 from flask_login import current_user,LoginManager,login_user
+from models.student import Student
+from models.company_user import CompanyUser
 from flask import abort ,request
 from flasgger import Swagger,swag_from
 from models.users import User
@@ -36,7 +38,7 @@ app.config["JWT_SECRET_KEY"] = "#MAD!1@PROJECT*^$"
 def login():
 
     data = request.json
-
+    id = None
     user = session.query(User).filter_by(
         username=data["username"]
     ).first()
@@ -46,14 +48,26 @@ def login():
 
     if not check_password_hash(user.password, data["password"]):
         return {"message": "Invalid password"}, 401
-
+    print('hi')
+    print(user.approved_status)
     if user.approved_status != "Approved":
         return {"message": "User not approved"}, 403
 
     roles = [role.name for role in user.roles]
+    if roles[0] =='STUDENT':
+        student = session.query(Student).filter_by(
+        user_id=user.id
+    ).first()
+        id = student.id
+
+    if roles[0] =='COMPANY':
+        company = session.query(CompanyUser).filter_by(
+        user_id=user.id
+    ).first()
+        id = company.company_id
 
     token = create_access_token(
-        identity=user.id,
+        identity=str(user.id),
         additional_claims={
             "roles": roles
         }
@@ -61,7 +75,10 @@ def login():
 
     return {
         "access_token": token,
-        "roles": roles
+        "roles": roles,
+        "user_id":user.id,
+        "table_id":id
+
     }
 
 

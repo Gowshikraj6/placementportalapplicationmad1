@@ -89,7 +89,7 @@ update_user_approval_swagger = {
                 "properties": {
                     "status": {
                         "type": "string",
-                        "example": "APPROVED"
+                        "example": "Approved"
                     },
                     "admin_id": {
                         "type": "integer",
@@ -499,7 +499,7 @@ get_applications_by_drive_swagger = {
 
 
 get_student_by_id_swagger = {
-    "tags": ["Student"],
+    "tags": ["Company"],
     "security": [
         {"Bearer": []}
     ],
