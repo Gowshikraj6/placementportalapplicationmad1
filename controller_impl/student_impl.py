@@ -4,9 +4,9 @@ from models.application import ApplicationStatus
 
 
 def apply_for_drive(db_session: db_session, student_id, drive_id,notes:None):
-
+    db = db_session()
     # 🔹 Check if student already applied
-    existing_application = db_session.query(Application).filter(
+    existing_application = db.query(Application).filter(
         Application.student_id == student_id,
         Application.drive_id == drive_id
     ).first()
@@ -22,8 +22,9 @@ def apply_for_drive(db_session: db_session, student_id, drive_id,notes:None):
         notes = notes
     )
 
-    db_session.add(application)
-    db_session.commit()
+    db.add(application)
+    db.commit()
+    db.refresh(application)
 
     return application.to_dict()
 
@@ -33,8 +34,8 @@ from models.student import Student
 
 
 def update_student(db_session: db_session, student_id, data):
-
-    student = db_session.query(Student).filter(
+    db = db_session()
+    student = db.query(Student).filter(
         Student.id == student_id
     ).first()
 
@@ -46,7 +47,8 @@ def update_student(db_session: db_session, student_id, data):
         if hasattr(student, key):
             setattr(student, key, value)
 
-    db_session.commit()
+    db.commit()
+    db.refresh(student)
 
     return student.to_dict()
 
@@ -57,8 +59,9 @@ from models.placement_drive import PlacementDrive, DriveStatus
 
 def get_approved_drives(db_session: db_session):
     try:
+        db = db_session()
         drives = (
-            db_session.query(PlacementDrive)
+            db.query(PlacementDrive)
             .filter(PlacementDrive.status == DriveStatus.APPROVED)
             .all()
         )
@@ -76,8 +79,9 @@ from models.placement_drive import PlacementDrive
 
 def get_student_applications(db_session: db_session, student_id: int):
     try:
+        db = db_session()
         applications = (
-            db_session.query(Application)
+            db.query(Application)
             .join(Application.drive)
             .filter(Application.student_id == student_id)
             .all()
@@ -111,7 +115,8 @@ def get_student_applications(db_session: db_session, student_id: int):
         return {"error": str(e)}
 
 def get_student_by_id(db_session: db_session, student_id: int):
-    student = db_session.query(Student).filter(Student.id == student_id).first()
+    db = db_session()
+    student = db.query(Student).filter(Student.id == student_id).first()
 
     if not student:
         return {"error": "Student not found"}

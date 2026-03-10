@@ -7,7 +7,7 @@ from models.company import Company
 from datetime import datetime
 
 def create_placement_drive(db_session: db_session, data):
-
+    db = db_session()
     drive = PlacementDrive(
         company_id=data["company_id"],
         job_title=data["job_title"],
@@ -19,16 +19,16 @@ def create_placement_drive(db_session: db_session, data):
         salary_package=data.get("salary_package")
     )
 
-    db_session.add(drive)
-    db_session.commit()
-
+    db.add(drive)
+    db.commit()
+    db.refresh(drive)
     return drive
 
 
 
 def get_drives_by_company(db_session: db_session, company_id):
-
-    drives = db_session.query(PlacementDrive).filter(
+    db = db_session()
+    drives = db.query(PlacementDrive).filter(
         PlacementDrive.company_id == company_id
     ).all()
     return drives
@@ -36,8 +36,8 @@ def get_drives_by_company(db_session: db_session, company_id):
 
 
 def get_applications_by_drive(db_session: db_session, drive_id):
-
-    applications = db_session.query(Application).filter(
+    db = db_session()
+    applications = db.query(Application).filter(
         Application.drive_id == drive_id
     ).all()
 
@@ -46,8 +46,8 @@ def get_applications_by_drive(db_session: db_session, drive_id):
 
 
 def get_student_by_id(db_session: db_session, student_id):
-
-    student = db_session.query(Student).filter(
+    db = db_session()
+    student = db.query(Student).filter(
         Student.id == student_id
     ).first()
 
@@ -55,8 +55,8 @@ def get_student_by_id(db_session: db_session, student_id):
 
 
 def update_application_status(db_session: db_session, application_id, status):
-
-    application = db_session.query(Application).filter(
+    db = db_session()
+    application = db.query(Application).filter(
         Application.id == application_id
     ).first()
 
@@ -65,12 +65,13 @@ def update_application_status(db_session: db_session, application_id, status):
 
     application.status = status
 
-    db_session.commit()
-
+    db.commit()
+    db.refresh(application)
     return application
 
 def get_company_by_id(db_session: db_session, company_id: int):
-    company = db_session.query(Company).filter(Company.id == company_id).first()
+    db = db_session()
+    company = db.query(Company).filter(Company.id == company_id).first()
 
     if not company:
         return {"error": "Company not found"}

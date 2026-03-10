@@ -43,9 +43,9 @@ app.secret_key = os.urandom(24)
 @swag_from(login_doc)
 def login():
     if request.method == "POST":
-
+        db = db_session()
         id = None
-        user = db_session.query(User).filter_by(
+        user = db.query(User).filter_by(
             username=request.form.get("username")
         ).first()
 
@@ -61,13 +61,13 @@ def login():
 
         roles = [role.name for role in user.roles]
         if roles[0] =='STUDENT':
-            student = db_session.query(Student).filter_by(
+            student = db.query(Student).filter_by(
             user_id=user.id
         ).first()
             id = student.id
 
         if roles[0] =='COMPANY':
-            company = db_session.query(CompanyUser).filter_by(
+            company = db.query(CompanyUser).filter_by(
             user_id=user.id
         ).first()
             id = company.company_id

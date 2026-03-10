@@ -8,9 +8,15 @@ from config.decorators import role_required
 
 student_api = Blueprint("student_api", __name__)
 
+@student_api.route("/dashboard")
+def student_dashboard():
+    from flask import session, render_template
+    return render_template(
+        "student_dashboard.html",
+        student_id=session["table_id"]
+    )
 
-
-@student_api.route("/student/drives", methods=["GET"])
+@student_api.route("/drives", methods=["GET"])
 @swag_from(get_approved_drives_swagger)
 @role_required("STUDENT")
 def fetch_approved_drives():
@@ -24,7 +30,7 @@ def fetch_approved_drives():
 
 
 
-@student_api.route("/student/apply", methods=["POST"])
+@student_api.route("/apply", methods=["POST"])
 @swag_from(apply_for_drive_swagger)
 @role_required("STUDENT")
 def apply_drive():
@@ -43,7 +49,7 @@ def apply_drive():
     return jsonify(result), 201
 
 
-@student_api.route("/student/<int:student_id>", methods=["PUT"])
+@student_api.route("/<int:student_id>", methods=["PUT"])
 @swag_from(update_student_swagger)
 @role_required("STUDENT")
 def update_student_profile(student_id):
@@ -60,7 +66,7 @@ def update_student_profile(student_id):
 
 
 
-@student_api.route("/student/<int:student_id>/applications", methods=["GET"])
+@student_api.route("/<int:student_id>/applications", methods=["GET"])
 @swag_from(get_student_applications_swagger)
 @role_required("STUDENT")
 def fetch_student_applications(student_id):
@@ -72,7 +78,7 @@ def fetch_student_applications(student_id):
 
     return jsonify(result), 200
 
-@student_api.route("/student/details/<int:student_id>", methods=["GET"])
+@student_api.route("/details/<int:student_id>", methods=["GET"])
 @swag_from(get_student_details_swagger)
 @role_required("STUDENT")
 def fetch_student_details(student_id):
