@@ -1,11 +1,12 @@
-from config.db_creation import session
+from config.db_creation import db_session
 from datetime import datetime
 from models.placement_drive import PlacementDrive
 from models.application import Application
 from models.student import Student
+from models.company import Company
 from datetime import datetime
 
-def create_placement_drive(session: session, data):
+def create_placement_drive(db_session: db_session, data):
 
     drive = PlacementDrive(
         company_id=data["company_id"],
@@ -18,25 +19,25 @@ def create_placement_drive(session: session, data):
         salary_package=data.get("salary_package")
     )
 
-    session.add(drive)
-    session.commit()
+    db_session.add(drive)
+    db_session.commit()
 
     return drive
 
 
 
-def get_drives_by_company(session: session, company_id):
+def get_drives_by_company(db_session: db_session, company_id):
 
-    drives = session.query(PlacementDrive).filter(
+    drives = db_session.query(PlacementDrive).filter(
         PlacementDrive.company_id == company_id
     ).all()
     return drives
 
 
 
-def get_applications_by_drive(session: session, drive_id):
+def get_applications_by_drive(db_session: db_session, drive_id):
 
-    applications = session.query(Application).filter(
+    applications = db_session.query(Application).filter(
         Application.drive_id == drive_id
     ).all()
 
@@ -44,18 +45,18 @@ def get_applications_by_drive(session: session, drive_id):
 
 
 
-def get_student_by_id(session: session, student_id):
+def get_student_by_id(db_session: db_session, student_id):
 
-    student = session.query(Student).filter(
+    student = db_session.query(Student).filter(
         Student.id == student_id
     ).first()
 
     return student
 
 
-def update_application_status(session: session, application_id, status):
+def update_application_status(db_session: db_session, application_id, status):
 
-    application = session.query(Application).filter(
+    application = db_session.query(Application).filter(
         Application.id == application_id
     ).first()
 
@@ -64,6 +65,24 @@ def update_application_status(session: session, application_id, status):
 
     application.status = status
 
-    session.commit()
+    db_session.commit()
 
     return application
+
+def get_company_by_id(db_session: db_session, company_id: int):
+    company = db_session.query(Company).filter(Company.id == company_id).first()
+
+    if not company:
+        return {"error": "Company not found"}
+
+    return {
+        "id": company.id,
+        "company_name": company.company_name,
+        "website": company.website,
+        "approval_status": company.approval_status.value,
+        "description": company.description,
+        "industry": company.industry,
+        "headquarters": company.headquarters,
+        "created_at": company.created_at,
+        "updated_at": company.updated_at
+    }

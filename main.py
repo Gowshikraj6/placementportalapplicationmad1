@@ -11,11 +11,13 @@ from flask import abort ,request
 from flasgger import Swagger,swag_from
 from models.users import User
 from config.admin_creation import create_admin
-from config.db_creation import session
+from config.db_creation import db_session
 from config.swagger import swagger_template,login_doc
 from flask_jwt_extended import JWTManager
 from flask_jwt_extended import create_access_token
 from werkzeug.security import check_password_hash
+import os
+
 
 create_db_and_tables()
 create_admin(engine)
@@ -28,8 +30,12 @@ app.register_blueprint(student_api, url_prefix="/student")
 app.register_blueprint(company_api, url_prefix="/company")
 
 app.config["JWT_SECRET_KEY"] = "#MAD!1@PROJECT*^$"
-
-
+app.config['JWT_TOKEN_LOCATION'] = ['cookies', 'headers']  # Try cookies first, then headers
+app.config['JWT_COOKIE_CSRF_PROTECT'] = False  # Set to True in production
+app.config['JWT_ACCESS_COOKIE_NAME'] = 'access_token_cookie'
+app.config['JWT_COOKIE_SECURE'] = False  # Set to True in production with HTTPS
+app.config['JWT_COOKIE_SAMESITE'] = 'Lax'
+app.secret_key = os.urandom(24)
 
 
 
@@ -37,9 +43,9 @@ app.config["JWT_SECRET_KEY"] = "#MAD!1@PROJECT*^$"
 @swag_from(login_doc)
 def login():
     if request.method == "POST":
-        data = request.json
+
         id = None
-        user = session.query(User).filter_by(
+        user = db_session.query(User).filter_by(
             username=request.form.get("username")
         ).first()
 
@@ -55,13 +61,13 @@ def login():
 
         roles = [role.name for role in user.roles]
         if roles[0] =='STUDENT':
-            student = session.query(Student).filter_by(
+            student = db_session.query(Student).filter_by(
             user_id=user.id
         ).first()
             id = student.id
 
         if roles[0] =='COMPANY':
-            company = session.query(CompanyUser).filter_by(
+            company = db_session.query(CompanyUser).filter_by(
             user_id=user.id
         ).first()
             id = company.company_id
@@ -79,14 +85,24 @@ def login():
         session["user_id"] = user.id
         session["table_id"] = id
         if "ADMIN" in roles:
-            return redirect(url_for("admin_dashboard"))
+            response =  redirect(url_for("admin_api.admin_dashboard"))
         elif "COMPANY" in roles:
-            return redirect(url_for("company_dashboard"))
+            response =  redirect(url_for("company_api.company_dashboard"))
         elif "STUDENT" in roles:
-            return redirect(url_for("student_dashboard"))
+            response =  redirect(url_for("student_api.student_dashboard"))
         else:
             flash("Role not recognized!", "danger")
-            return redirect(url_for("login"))
+            response =  redirect(url_for("login"))
+        response.set_cookie(
+            'access_token_cookie',
+            token,
+            httponly=True,  # Can't be accessed by JavaScript (more secure)
+            secure=False,  # Set to True in production
+            samesite='Lax'
+        )
+
+        flash("Login successful!", "success")
+        return response
 
     return render_template("login.html")
 

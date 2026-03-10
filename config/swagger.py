@@ -775,3 +775,144 @@ get_student_applications_swagger = {
         }
     }
 }
+
+get_company_by_id_swagger = {
+    "tags": ["Company"],
+"security": [
+        {"Bearer": []}
+    ],
+    "summary": "Get company details by ID",
+    "description": "Fetch details of a company using its ID",
+    "parameters": [
+        {
+            "name": "company_id",
+            "in": "path",
+            "type": "integer",
+            "required": True,
+            "description": "ID of the company"
+        }
+    ],
+    "responses": {
+        200: {
+            "description": "Company details retrieved successfully",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "id": {"type": "integer"},
+                    "company_name": {"type": "string"},
+                    "website": {"type": "string"},
+                    "approval_status": {"type": "string"},
+                    "description": {"type": "string"},
+                    "industry": {"type": "string"},
+                    "headquarters": {"type": "string"},
+                    "created_at": {"type": "string"},
+                    "updated_at": {"type": "string"}
+                }
+            }
+        },
+        404: {
+            "description": "Company not found"
+        }
+    }
+}
+
+get_student_details_swagger = {
+    "tags": ["Student"],
+"security": [
+        {"Bearer": []}
+    ],
+    "summary": "Get student details by ID",
+    "description": "Fetch details of a student using their ID",
+    "parameters": [
+        {
+            "name": "student_id",
+            "in": "path",
+            "type": "integer",
+            "required": True,
+            "description": "ID of the student"
+        }
+    ],
+    "responses": {
+        200: {
+            "description": "Student details retrieved successfully",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "id": {"type": "integer"},
+                    "user_id": {"type": "integer"},
+                    "roll_number": {"type": "string"},
+                    "first_name": {"type": "string"},
+                    "last_name": {"type": "string"},
+                    "email": {"type": "string"},
+                    "phone": {"type": "string"},
+                    "gender": {"type": "string"},
+                    "date_of_birth": {"type": "string"},
+                    "department": {"type": "string"},
+                    "degree": {"type": "string"},
+                    "specialization": {"type": "string"},
+                    "batch_year": {"type": "integer"},
+                    "cgpa": {"type": "number"},
+                    "tenth_percentage": {"type": "number"},
+                    "twelfth_percentage": {"type": "number"},
+                    "diploma_percentage": {"type": "number"},
+                    "active_backlogs": {"type": "integer"},
+                    "total_backlogs": {"type": "integer"},
+                    "placement_status": {"type": "string"},
+                    "willing_to_relocate": {"type": "boolean"},
+                    "github_url": {"type": "string"},
+                    "linkedin_url": {"type": "string"},
+                    "portfolio_url": {"type": "string"},
+                    "leetcode_rating": {"type": "integer"},
+                    "hackerrank_rating": {"type": "integer"},
+                    "skills": {"type": "string"},
+                    "created_at": {"type": "string"},
+                    "updated_at": {"type": "string"}
+                }
+            }
+        },
+        404: {
+            "description": "Student not found"
+        }
+    }
+}
+
+get_admin_by_id_swagger = {
+    "tags": ["Admin"],
+"security": [
+        {"Bearer": []}
+    ],
+    "summary": "Get admin details by ID",
+    "description": "Fetch details of an admin user using their user ID",
+    "parameters": [
+        {
+            "name": "user_id",
+            "in": "path",
+            "type": "integer",
+            "required": True,
+            "description": "ID of the admin user"
+        }
+    ],
+    "responses": {
+        200: {
+            "description": "Admin details retrieved successfully",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "id": {"type": "integer"},
+                    "username": {"type": "string"},
+                    "email": {"type": "string"},
+                    "active": {"type": "boolean"},
+                    "approved_status": {"type": "string"},
+                    "created_at": {"type": "string"},
+                    "created_by": {"type": "integer"},
+                    "approved_at": {"type": "string"},
+                    "approved_by": {"type": "integer"},
+                    "roles": {"type": "array", "items": {"type": "string"}}
+                }
+            }
+        },
+        404: {"description": "User not found"},
+        400: {"description": "User is not an admin"}
+    }
+}
+
