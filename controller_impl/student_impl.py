@@ -25,7 +25,7 @@ def apply_for_drive(db_session: db_session, student_id, drive_id,notes:None):
     db.add(application)
     db.commit()
     db.refresh(application)
-
+    db.close()
     return application.to_dict()
 
 
@@ -49,7 +49,7 @@ def update_student(db_session: db_session, student_id, data):
 
     db.commit()
     db.refresh(student)
-
+    db.close()
     return student.to_dict()
 
 
@@ -87,7 +87,7 @@ def get_approved_drives(db_session, student_id):
             data = drive.to_dict()
             data["company_name"] = drive.company.company_name
             result.append(data)
-
+        db.close()
         return result
 
     except Exception as e:
@@ -130,7 +130,7 @@ def get_student_applications(db_session: db_session, student_id: int):
 
                 "notes": app.notes
             })
-
+        db.close()
         return result
 
     except Exception as e:
@@ -142,7 +142,7 @@ def get_student_by_id(db_session: db_session, student_id: int):
 
     if not student:
         return {"error": "Student not found"}
-
+    db.close()
     return {
         "id": student.id,
         "user_id": student.user_id,

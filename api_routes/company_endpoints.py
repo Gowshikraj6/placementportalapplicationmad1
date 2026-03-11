@@ -94,14 +94,7 @@ def view_student(student_id):
     if not student:
         return jsonify({"error": "Student not found"}), 404
 
-    return jsonify({
-        "id": student.id,
-        "roll_number": student.roll_number,
-        "first_name": student.first_name,
-        "last_name": student.last_name,
-        "email": student.email,
-        "user_id": student.user_id
-    }), 200
+    return jsonify(student), 200
 
 
 

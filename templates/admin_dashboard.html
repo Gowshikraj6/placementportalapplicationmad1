@@ -24,8 +24,8 @@ Logout
 <ul class="nav nav-tabs">
 
 <li class="nav-item">
-<button class="nav-link active" data-bs-toggle="tab" data-bs-target="#students">
-Unapproved Students
+<button class="nav-link active" data-bs-toggle="tab" data-bs-target="#users">
+Unapproved Users
 </button>
 </li>
 
@@ -44,49 +44,45 @@ Pending Drives
 </ul>
 
 
-
 <div class="tab-content mt-4">
 
 
-<!-- STUDENTS -->
+<!-- UNAPPROVED USERS -->
 
-<div class="tab-pane fade show active" id="students">
+<div class="tab-pane fade show active" id="users">
 
-<table class="table table-striped table-bordered" id="studentsTable">
+<table class="table table-striped table-bordered" id="usersTable">
 
 <thead class="table-dark">
 <tr>
-<th>Roll No</th>
-<th>Name</th>
+<th>ID</th>
+<th>Username</th>
 <th>Email</th>
-<th>Department</th>
-<th>Degree</th>
-<th>Batch Year</th>
+<th>Status</th>
 <th>Action</th>
 </tr>
 </thead>
 
 <tbody>
 
-{% for s in students %}
+{% for u in students %}
 
-<tr data-id="{{ s.id }}">
-<td>{{ s.roll_number }}</td>
-<td>{{ s.first_name }} {{ s.last_name or '' }}</td>
-<td>{{ s.email }}</td>
-<td>{{ s.department }}</td>
-<td>{{ s.degree }}</td>
-<td>{{ s.batch_year }}</td>
+<tr data-id="{{ u.id }}">
+
+<td>{{ u.id }}</td>
+<td>{{ u.username }}</td>
+<td>{{ u.email }}</td>
+<td>{{ u.approved_status }}</td>
 
 <td>
 
 <button class="btn btn-success btn-sm"
-onclick="approveUser({{ s.id }}, 'APPROVED')">
+onclick="approveUser({{ u.id }}, 'Approved')">
 Approve
 </button>
 
 <button class="btn btn-danger btn-sm"
-onclick="approveUser({{ s.id }}, 'REJECTED')">
+onclick="approveUser({{ u.id }}, 'Rejected')">
 Reject
 </button>
 
@@ -97,12 +93,13 @@ Reject
 {% else %}
 
 <tr>
-<td colspan="7" class="text-center">No unapproved students</td>
+<td colspan="5" class="text-center">No unapproved users</td>
 </tr>
 
 {% endfor %}
 
 </tbody>
+
 </table>
 
 </div>
@@ -244,7 +241,7 @@ Reject
 const adminId = {{ admin_id }}
 
 
-// APPROVE STUDENT
+// APPROVE USER
 
 function approveUser(id,status){
 
@@ -269,7 +266,7 @@ admin_id:adminId
 
 alert("User "+status)
 
-let row=document.querySelector(`#studentsTable tr[data-id='${id}']`)
+let row=document.querySelector(`#usersTable tr[data-id='${id}']`)
 
 if(row) row.remove()
 

@@ -21,7 +21,7 @@ def view_unapproved_user():
     users = db.query(User).filter(
         User.approved_status == "Pending"
     ).all()
-
+    db.close()
     return [user.to_dict() for user in users]
 
 def update_user_approval(db_session: db_session, user_id, status, admin_id):
@@ -34,6 +34,7 @@ def update_user_approval(db_session: db_session, user_id, status, admin_id):
     user.approved_by = admin_id
     db.commit()
     db.refresh(user)
+    db.close()
     return user.to_dict()
 
 
@@ -42,6 +43,7 @@ def get_pending_companies(db_session: db_session):
     companies = db.query(Company).filter(
         Company.approval_status == ApprovalStatus.PENDING
     ).all()
+    db.close()
     return [company.to_dict() for company in companies]
 
 def update_company_approval(db_session: db_session, company_id, status):
@@ -55,6 +57,7 @@ def update_company_approval(db_session: db_session, company_id, status):
     company.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(company)
+    db.close()
     return company.to_dict()
 
 
@@ -62,13 +65,14 @@ def update_company_approval(db_session: db_session, company_id, status):
 def get_all_applications(db_session: db_session):
     db = db_session()
     applications = db.query(Application).all()
+    db.close()
     return [application.to_dict() for application in applications]
 
 
 def get_all_placement_drives(db_session: db_session):
     db = db_session()
     drives = db.query(PlacementDrive).all()
-
+    db.close()
     return [drive.to_dict() for drive in drives]
 
 
@@ -90,7 +94,7 @@ def get_pending_placement_drives(db_session: db_session):
         data["company_name"] = company.company_name
         data["website"] = company.website
         result.append(data)
-
+    db.close()
     return result
 
 
@@ -104,6 +108,7 @@ def update_drive_status(db_session: db_session, drive_id, status):
     drive.status = status
     db.commit()
     db.refresh(drive)
+    db.close()
     return drive.to_dict()
 
 def get_admin_by_id(db_session: db_session, user_id: int):
@@ -117,7 +122,7 @@ def get_admin_by_id(db_session: db_session, user_id: int):
     is_admin = any(role.name == "ADMIN" for role in user.roles)
     if not is_admin:
         return {"error": "User is not an admin"}
-
+    db.close()
     return {
         "id": user.id,
         "username": user.username,

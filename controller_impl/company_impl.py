@@ -22,6 +22,7 @@ def create_placement_drive(db_session: db_session, data):
     db.add(drive)
     db.commit()
     db.refresh(drive)
+    db.close()
     return drive
 
 
@@ -31,6 +32,7 @@ def get_drives_by_company(db_session: db_session, company_id):
     drives = db.query(PlacementDrive).filter(
         PlacementDrive.company_id == company_id
     ).all()
+    db.close()
     return drives
 
 
@@ -40,7 +42,7 @@ def get_applications_by_drive(db_session: db_session, drive_id):
     applications = db.query(Application).filter(
         Application.drive_id == drive_id
     ).all()
-
+    db.close()
     return applications
 
 
@@ -50,8 +52,8 @@ def get_student_by_id(db_session: db_session, student_id):
     student = db.query(Student).filter(
         Student.id == student_id
     ).first()
-
-    return student
+    db.close()
+    return student.to_dict()
 
 
 def update_application_status(db_session: db_session, application_id, status):
@@ -67,6 +69,7 @@ def update_application_status(db_session: db_session, application_id, status):
 
     db.commit()
     db.refresh(application)
+    db.close()
     return application
 
 def get_company_by_id(db_session: db_session, company_id: int):
@@ -75,7 +78,7 @@ def get_company_by_id(db_session: db_session, company_id: int):
 
     if not company:
         return {"error": "Company not found"}
-
+    db.close()
     return {
         "id": company.id,
         "company_name": company.company_name,

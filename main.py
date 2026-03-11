@@ -102,6 +102,7 @@ def login():
         )
 
         flash("Login successful!", "success")
+        db.close()
         return response
 
     return render_template("login.html")
@@ -134,4 +135,4 @@ swagger = Swagger(app,template=swagger_template)
 jwt = JWTManager(app)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, threaded=False)
