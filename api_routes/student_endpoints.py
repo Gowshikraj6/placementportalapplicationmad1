@@ -16,12 +16,12 @@ def student_dashboard():
         student_id=session["table_id"]
     )
 
-@student_api.route("/drives", methods=["GET"])
+@student_api.route("/drives/<int:student_id>", methods=["GET"])
 @swag_from(get_approved_drives_swagger)
 @role_required("STUDENT")
-def fetch_approved_drives():
+def fetch_approved_drives(student_id):
 
-    result = get_approved_drives(db_session)
+    result = get_approved_drives(db_session,student_id)
 
     if isinstance(result, dict) and "error" in result:
         return jsonify(result), 500

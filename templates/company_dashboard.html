@@ -12,7 +12,17 @@
 
 <div class="container py-4">
 
-<h2 class="mb-4">Welcome, {{ company.company_name }}</h2>
+<!-- HEADER WITH LOGOUT -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+<h2>Welcome, {{ company.company_name }}</h2>
+
+<a href="/logout" class="btn btn-danger">
+Logout
+</a>
+
+</div>
 
 
 <!-- Tabs -->
@@ -166,9 +176,7 @@ Applications
 const companyId = {{ company_id }}
 
 
-// ---------------------
 // Load Placement Drives
-// ---------------------
 
 function loadDrives(){
 
@@ -216,10 +224,7 @@ document.getElementById("drivesTable").innerHTML=table
 }
 
 
-
-// ---------------------
 // Create Placement Drive
-// ---------------------
 
 function createDrive(){
 
@@ -262,10 +267,7 @@ loadDrives()
 }
 
 
-
-// ---------------------
 // View Applications
-// ---------------------
 
 function viewApplications(driveId){
 
@@ -329,10 +331,7 @@ document.getElementById("applicationsTable").innerHTML=table
 }
 
 
-
-// ---------------------
 // View Student Details
-// ---------------------
 
 function viewStudent(studentId){
 
@@ -355,10 +354,7 @@ alert(
 }
 
 
-
-// ---------------------
 // Update Application Status
-// ---------------------
 
 function updateStatus(appId,status){
 

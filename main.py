@@ -78,7 +78,7 @@ def login():
                 "roles": roles
             }
         )
-        flash("Login successful!", "success")
+
 
         session["access_token"] = token
         session["roles"] = roles
@@ -106,6 +106,29 @@ def login():
 
     return render_template("login.html")
 
+
+@app.route("/logout")
+def logout():
+
+    # Clear session data
+    session.pop("access_token", None)
+    session.pop("roles", None)
+    session.pop("user_id", None)
+    session.pop("table_id", None)
+
+    flash("Logged out successfully!", "success")
+
+    # Redirect to login
+    response = redirect(url_for("login"))
+
+    # Remove JWT cookie
+    response.set_cookie(
+        "access_token_cookie",
+        "",
+        expires=0
+    )
+
+    return response
 
 swagger = Swagger(app,template=swagger_template)
 jwt = JWTManager(app)

@@ -1,7 +1,7 @@
 from config.db_creation import db_session
 from models.application import Application
 from models.application import ApplicationStatus
-
+from models.company import Company
 
 def apply_for_drive(db_session: db_session, student_id, drive_id,notes:None):
     db = db_session()
@@ -57,16 +57,38 @@ def update_student(db_session: db_session, student_id, data):
 from models.placement_drive import PlacementDrive, DriveStatus
 
 
-def get_approved_drives(db_session: db_session):
+from sqlalchemy.orm import joinedload
+from sqlalchemy import and_
+
+def get_approved_drives(db_session, student_id):
     try:
         db = db_session()
+
         drives = (
             db.query(PlacementDrive)
-            .filter(PlacementDrive.status == DriveStatus.APPROVED)
+            .join(Company)  # join company
+            .outerjoin(
+                Application,
+                and_(
+                    Application.drive_id == PlacementDrive.id,
+                    Application.student_id == student_id
+                )
+            )
+            .filter(
+                PlacementDrive.status == DriveStatus.APPROVED,
+                Application.id == None  # student has NOT applied
+            )
             .all()
         )
 
-        return [drive.to_dict() for drive in drives]
+        result = []
+
+        for drive in drives:
+            data = drive.to_dict()
+            data["company_name"] = drive.company.company_name
+            result.append(data)
+
+        return result
 
     except Exception as e:
         return {"error": str(e)}

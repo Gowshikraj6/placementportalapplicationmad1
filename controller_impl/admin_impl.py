@@ -75,11 +75,23 @@ def get_all_placement_drives(db_session: db_session):
 
 def get_pending_placement_drives(db_session: db_session):
     db = db_session()
-    drives = db.query(PlacementDrive).filter(
-        PlacementDrive.status == DriveStatus.PENDING
-    ).all()
 
-    return [drive.to_dict() for drive in drives]
+    drives = (
+        db.query(PlacementDrive, Company)
+        .join(Company, PlacementDrive.company_id == Company.id)
+        .filter(PlacementDrive.status == DriveStatus.PENDING)
+        .all()
+    )
+
+    result = []
+
+    for drive, company in drives:
+        data = drive.to_dict()
+        data["company_name"] = company.company_name
+        data["website"] = company.website
+        result.append(data)
+
+    return result
 
 
 def update_drive_status(db_session: db_session, drive_id, status):
