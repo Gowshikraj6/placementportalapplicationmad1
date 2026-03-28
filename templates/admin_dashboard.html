@@ -238,10 +238,18 @@ Reject
 
 <div class="tab-pane fade" id="analytics">
 
-<h4 class="mb-3">Application Statistics</h4>
+<h4 class="mb-4">Analytics Dashboard</h4>
 
-<canvas id="applicationChart" height="100"></canvas>
+<!-- Applications Chart -->
+<div class="mb-5">
+  <h5>Applications Status</h5>
+  <canvas id="applicationChart" height="100"></canvas>
+</div>
 
+<!-- Drives Chart -->
+<div>
+  <h5>Drive Status</h5>
+  <canvas id="driveChart" height="100"></canvas>
 </div>
 
 </div>
@@ -363,51 +371,79 @@ if(row) row.remove()
 
 let chartLoaded = false;
 
-// detect tab click
 document.querySelector('[data-bs-target="#analytics"]').addEventListener('click', () => {
 
 if(chartLoaded) return;
 
-fetch('/admin/applications')
-.then(res => res.json())
-.then(data => {
+// ✅ fetch BOTH APIs properly
+Promise.all([
+    fetch('/admin/applications').then(res => res.json()),
+    fetch('/admin/placement-drives').then(res => res.json())
+])
+.then(([applications, drives]) => {
+
+
+// =====================
+// 📊 APPLICATION CHART
+// =====================
 
 let shortlisted = 0;
 let rejected = 0;
 
-// assuming each application has status field
-data.forEach(app => {
-    if(app.status === "SHORTLISTED") shortlisted++;
-    else if(app.status === "REJECTED") rejected++;
+applications.forEach(app => {
+    let status = app.status?.toUpperCase();
+
+    if(status === "SHORTLISTED") shortlisted++;
+    else if(status === "REJECTED") rejected++;
 });
 
-const ctx = document.getElementById('applicationChart');
-
-new Chart(ctx, {
-    type: 'bar',   // can also use 'pie'
+new Chart(document.getElementById('applicationChart'), {
+    type: 'bar',
     data: {
         labels: ['Shortlisted', 'Rejected'],
         datasets: [{
             label: 'Student Count',
             data: [shortlisted, rejected],
-            backgroundColor: [
-                'green',
-                'red'
-            ]
+            backgroundColor: ['green', 'red']
         }]
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                display: true
-            }
-        }
+    }
+});
+
+
+// =====================
+// 📊 DRIVE CHART
+// =====================
+
+let pending = 0;
+let approved = 0;
+let rejectedDrives = 0;
+
+drives.forEach(d => {
+    let status = d.status?.toUpperCase();
+
+    if(status === "PENDING") pending++;
+    else if(status === "APPROVED") approved++;
+    else if(status === "REJECTED") rejectedDrives++;
+});
+
+new Chart(document.getElementById('driveChart'), {
+    type: 'bar',
+    data: {
+        labels: ['Pending', 'Approved', 'Rejected'],
+        datasets: [{
+            label: 'Drive Count',
+            data: [pending, approved, rejectedDrives],
+            backgroundColor: ['orange', 'green', 'red']
+        }]
     }
 });
 
 chartLoaded = true;
 
+})
+.catch(err => {
+    console.error("Analytics error:", err);
+    alert("Failed to load analytics");
 });
 
 });
