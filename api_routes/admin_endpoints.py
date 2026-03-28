@@ -108,20 +108,7 @@ def approve_company(company_id):
 def view_all_applications():
 
     applications = get_all_applications(db_session)
-
-    result = []
-
-    for app in applications:
-        result.append({
-            "id": admin_api.id,
-            "student_id": admin_api.student_id,
-            "drive_id": admin_api.drive_id,
-            "application_date": admin_api.application_date,
-            "status": admin_api.status,
-            "notes": admin_api.notes
-        })
-
-    return jsonify(result), 200
+    return jsonify(applications), 200
 
 
 
